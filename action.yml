@@ -1,0 +1,33 @@
+name: 'heroku-set-buildpacks'
+
+inputs:
+    app:
+        required: true
+        description: |
+            Heroku app.
+            Ex: 'app'.
+
+    buildpacks:
+        required: true
+        description: |
+            Heroku buildpacks.
+            Ex: "updates[][buildpack]='https://github.com/heroku/heroku-buildpack-nodejs.git'".
+
+    token:
+        required: true
+        description: |
+            Heroku API Key.
+            Ex: 'asdf1234'.
+
+runs:
+    using: 'composite'
+
+    steps:
+        - name: 'Set buildpacks'
+          uses: 'intercapinc/heroku-client@48a0127c4f9227b043d3af78fdaa997be701382e'
+          with:
+              endpoint: 'apps/${{ inputs.app }}/buildpack-installations'
+              method: 'PUT'
+              token: '${{ inputs.token }}'
+              expected: 200
+              data: '${{ inputs.buildpacks }}'
